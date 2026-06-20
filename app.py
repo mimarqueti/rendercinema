@@ -21,7 +21,14 @@ def calcular_trajetoria():
     print(f"Calculando com ARRASTO para: Velocidade={v0}m/s, Ângulo={angulo_graus}°, Cd={c_d}")
 
     # 2. Configurações físicas do Meio (Ar Atmosférico) e do Projétil
-    rho_ar = 1.204  # Densidade do ar (kg/m³)
+    if g == 1.62:       # Lua
+        rho_ar = 0.0    # Vácuo
+    elif g == 3.71:     # Marte
+        rho_ar = 0.020  # Rarefeita
+    elif g == 24.79:    # Júpiter
+        rho_ar = 0.133  # Gasosa superior
+    else:               # Terra (9.81) ou qualquer outro
+        rho_ar = 1.204
     diametro_projetil = 0.10  # Diâmetro padrão do objeto (m)
     area_frontal = np.pi * (diametro_projetil / 2) ** 2
 
