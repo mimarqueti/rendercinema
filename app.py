@@ -82,12 +82,30 @@ def calcular_trajetoria():
         t += dt
 
         # Trava de segurança para o servidor não travar se o objeto nunca cair
+       # Trava de segurança para o servidor não travar se o objeto nunca cair
         if t > 100.0:
             break
 
-    # Envia a lista completa de coordenadas geradas de volta para o JavaScript
-    return jsonify(trajetoria_formatada)
+    # --- CALCULA AS MÉTRICAS DE RESUMO DO LANÇAMENTO ---
+    v_final = np.hypot(vx, vy) # Velocidade resultante final de impacto
+    energia_cinetica_final = 0.5 * massa * (v_final ** 2)
+    
+    # Encontra a maior altura (y) percorrida na lista de trajetórias
+    altura_maxima = max([ponto['y'] for ponto in trajetoria_formatada]) if trajetoria_formatada else y0
+    alcance_maximo = x_atual # O último x alcançado
 
+    # Monta o pacote de resposta estruturado
+    resposta_completa = {
+        "trajetoria": trajetoria_formatada,
+        "alcance": float(alcance_maximo),
+        "alturaMaxima": float(altura_maxima),
+        "tempoVoo": float(t),
+        "velocidadeFinal": float(v_final),
+        "energiaCineticaFinal": float(energia_cinetica_final)
+    }
+
+    # Envia o dicionário completo de volta para o JavaScript
+    return jsonify(resposta_completa)
 if __name__ == '__main__':
     # O Render avisa o Python em qual porta rodar através dessa variável de ambiente
     porta = int(os.environ.get("PORT", 5000))
